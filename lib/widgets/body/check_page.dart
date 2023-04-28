@@ -14,12 +14,12 @@ import 'package:slide_action/slide_action.dart';
 import 'package:slide_digital_clock/slide_digital_clock.dart';
 
 import '../../module/home/home_check_token.dart';
-import '../../pages/login.dart';
+import '../../pages/login_pages.dart';
 import '../../services/data_presensi.dart';
 import '../../services/load_presensi.dart';
 import '../appbar/appbar_title.dart';
 
-//isinya slider dan riwayat presensi
+//isinya slider dan riwayat presensi digabung
 class SliderPresensi extends StatefulWidget {
   const SliderPresensi({Key? key}) : super(key: key);
 
@@ -42,19 +42,15 @@ class _SliderPresensiState extends State<SliderPresensi> {
   void initState() {
     super.initState();
     checkTokenPage();
-    loadPresensi();
+    loadDataPresensi();
   }
 
   void loadDataPresensi() async {
-    // print("AAAAAAAAAAAAA");
     _presensi.clear();
-
     try {
       await _load.fetchJson().then((value) {
         setState(() {
           _presensi.addAll(value);
-
-          // print(value);
         });
         _rfc.refreshCompleted();
       });
@@ -82,18 +78,6 @@ class _SliderPresensiState extends State<SliderPresensi> {
 
   void simpanPresensi(dataJam) {
     _simpanPresensi.simpanPresensi(dataJam).then((value) {});
-  }
-
-  void loadPresensi() async {
-    // print("AAAAAAAAAAAAA");
-    _presensi.clear();
-    await _load.fetchJson().then((value) {
-      setState(() {
-        _presensi.addAll(value);
-        // print(value);
-        _rfc.refreshCompleted();
-      });
-    });
   }
 
   @override
@@ -126,6 +110,7 @@ class _SliderPresensiState extends State<SliderPresensi> {
         onRefresh: loadDataPresensi,
         header: WaterDropHeader(
           waterDropColor: Styles.lightOrangeColor,
+          completeDuration: const Duration(microseconds: 200),
         ),
         child: ListView(
           children: [
@@ -134,14 +119,26 @@ class _SliderPresensiState extends State<SliderPresensi> {
               children: [
                 Container(
                   //untuk stack warna biru di atas jam
-                  height: screenHeight / 9,
+                  height: screenHeight / 8,
                   color: Styles.darkBlueColor,
                 ),
+                // Center(
+                //   child: RoundedBackgroundText(
+                //     "Ambil presensi Anda hari ini !",
+                //     textAlign: TextAlign.center,
+                //     style: textTheme.bodySmall!
+                //         .copyWith(color: Styles.textBlack, fontSize: 12),
+                //     backgroundColor: Styles.lightYellowColor,
+                //     innerRadius: 100,
+                //     outerRadius: 100,
+                //     maxLines: 1,
+                //   ),
+                // ),
                 Container(
                   //untuk kotak jam
                   margin: const EdgeInsets.symmetric(
                     horizontal: 80,
-                    vertical: 25,
+                    vertical: 30,
                   ),
                   decoration: BoxDecoration(
                     color: Styles.whiteColor,
@@ -194,7 +191,7 @@ class _SliderPresensiState extends State<SliderPresensi> {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    "Slide untuk mengambil Absen",
+                                    "       Slide untuk mengambil Absen",
                                     style: TextStyle(
                                         color: Styles.bgColor,
                                         fontFamily: "MomcakePro",
@@ -206,7 +203,7 @@ class _SliderPresensiState extends State<SliderPresensi> {
                             thumbBuilder: (context, state) {
                               return AnimatedContainer(
                                 duration: const Duration(milliseconds: 400),
-                                margin: const EdgeInsets.all(4),
+                                margin: const EdgeInsets.all(5),
                                 decoration: BoxDecoration(
                                   color: state.isPerformingAction
                                       ? Styles.lightOrangeColor
@@ -224,16 +221,14 @@ class _SliderPresensiState extends State<SliderPresensi> {
                               );
                             },
                             action: () async {
-                              await Future.delayed(
-                                const Duration(seconds: 1),
-                              );
+                              Future.delayed(const Duration(seconds: 1));
 
                               await _simpanPresensi
-                                  // .simpanPresensi(formattedDate)
                                   .simpanPresensi(formattedDate)
                                   .then(
                                 (value) {
                                   loadDataPresensi();
+
                                   Future.delayed(
                                       const Duration(milliseconds: 600));
                                   Fluttertoast.showToast(
@@ -280,105 +275,114 @@ class _SliderPresensiState extends State<SliderPresensi> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Riwayat Presensi Benar",
+                            "Riwayat Presensi",
                             style: textTheme.labelMedium,
                           ),
                         ],
                       ),
                       const Gap(10),
-                      ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        physics: const ScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: screenHeight / 9,
-                                  margin: const EdgeInsets.all(7),
-                                  decoration: BoxDecoration(
-                                    color: Styles.whiteColor,
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(10),
+                      GlowingOverscrollIndicator(
+                        color: Colors.transparent,
+                        axisDirection: AxisDirection.up,
+                        showLeading: false,
+                        showTrailing: false,
+                        child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          physics: const ScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: screenHeight / 9,
+                                    margin: const EdgeInsets.all(6),
+                                    decoration: BoxDecoration(
+                                      color: Styles.whiteColor,
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
+                                    ),
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 8,
+                                      ),
+                                      child: Column(
+                                        // crossAxisAlignment:
+                                        //     CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              _hariTanggal(index),
+                                              //     "TERLAMBAT 5 MENIT", Styles.redColor),
+                                              // _statusAbsen(
+                                              _statusAbsen(index),
+                                            ],
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Column(
+                                                  // mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    _jenisAbsen("Absen Masuk"),
+                                                    const Gap(4),
+                                                    Text(
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      _presensi[index]
+                                                          .waktuMasuk,
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            "Montserrat-Bold",
+                                                        color: Styles.textBlack,
+                                                        fontSize:
+                                                            screenWidth / 15,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Column(
+                                                  children: [
+                                                    _jenisAbsen("Absen Pulang"),
+                                                    const Gap(4),
+                                                    Text(
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      _presensi[index]
+                                                          .waktuPulang,
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            "Montserrat-Bold",
+                                                        color: Styles.textBlack,
+                                                        fontSize:
+                                                            screenWidth / 15,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                  child: Container(
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 8,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            _hariTanggal(index),
-                                            //     "TERLAMBAT 5 MENIT", Styles.redColor),
-                                            // _statusAbsen(
-                                            _statusAbsen(index),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Expanded(
-                                              child: Column(
-                                                // mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  _jenisAbsen("Absen Masuk"),
-                                                  const Gap(4),
-                                                  Text(
-                                                    textAlign: TextAlign.center,
-                                                    _presensi[index].waktuMasuk,
-                                                    style: TextStyle(
-                                                      fontFamily:
-                                                          "Montserrat-Bold",
-                                                      color: Styles.textBlack,
-                                                      fontSize:
-                                                          screenWidth / 15,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Column(
-                                                children: [
-                                                  _jenisAbsen("Absen Pulang"),
-                                                  const Gap(4),
-                                                  Text(
-                                                    textAlign: TextAlign.center,
-                                                    _presensi[index]
-                                                        .waktuPulang,
-                                                    style: TextStyle(
-                                                      fontFamily:
-                                                          "Montserrat-Bold",
-                                                      color: Styles.textBlack,
-                                                      fontSize:
-                                                          screenWidth / 15,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        itemCount: _presensi.length,
+                                ],
+                              ),
+                            );
+                          },
+                          itemCount: _presensi.length,
+                        ),
                       )
                     ],
                   ),
@@ -422,12 +426,12 @@ class _SliderPresensiState extends State<SliderPresensi> {
           ),
           onTap: () async {
             //FUNGSI LOGOUT
-            // SystemNavigator.pop();
+
             final prefs = await SharedPreferences.getInstance();
             await prefs.remove('token');
             await prefs.remove('absensiID');
-            Future.delayed(const Duration(milliseconds: 300));
-            if (context.mounted) {
+            // Future.delayed(const Duration(milliseconds: 300));
+            if (mounted) {
               Fluttertoast.showToast(
                   msg: "Anda telah Log Out",
                   toastLength: Toast.LENGTH_SHORT,
@@ -440,6 +444,7 @@ class _SliderPresensiState extends State<SliderPresensi> {
             }
           },
         ),
+        //TES
       ],
     );
   }

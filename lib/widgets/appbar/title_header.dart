@@ -9,11 +9,11 @@ class TitleHeader extends StatelessWidget {
     super.key,
     required this.employeeName,
     required this.jobTitle,
-    required this.absenceStatus,
+    // required this.absenceStatus,
   });
   final String employeeName;
   final String jobTitle;
-  final String absenceStatus;
+  // final String absenceStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -39,15 +39,16 @@ class TitleHeader extends StatelessWidget {
               style: textTheme.headlineSmall,
             ),
             const Gap(5),
-            //Notifikasi belum mengambil absen
-            RoundedBackgroundText(
-              absenceStatus,
-              textAlign: TextAlign.left,
-              style: textTheme.bodySmall,
-              backgroundColor: Styles.whiteColor,
-              innerRadius: 100,
-              outerRadius: 100,
-            ),
+            // Notifikasi belum mengambil absen
+
+            // RoundedBackgroundText(
+            //   absenceStatus,
+            //   textAlign: TextAlign.left,
+            //   style: textTheme.bodySmall,
+            //   backgroundColor: Styles.whiteColor,
+            //   innerRadius: 100,
+            //   outerRadius: 100,
+            // ),
           ],
         )
       ],

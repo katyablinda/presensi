@@ -1,5 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
-
+import 'package:dart_ipify/dart_ipify.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
@@ -7,6 +8,7 @@ import 'package:gap/gap.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/my_response.dart';
 import '../module/login/login_controller.dart';
@@ -27,23 +29,31 @@ class _LoginPageState extends State<LoginPage> {
 
   TextEditingController loginController = TextEditingController();
   TextEditingController passController = TextEditingController();
+  final RefreshController refresh = RefreshController();
 
   double screenHeight = 0; //untuk mendapatkan ukuran screen
   double screenWidth = 0;
   final LoginController _controller = LoginController();
+  bool _isKeyboardVisible = false;
+  String Textt = 'Ip';
+
   // bool _isVisible = true;
   @override
   void initState() {
     super.initState();
     initializeDateFormatting("id");
     checkTokenLogin();
-    // cekIP();
+    cekIP();
   }
 
-  // void cekIP() async {
-  //   final ipv4json = await Ipify.ipv64(format: Format.JSON);
-  //   print(ipv4json);
-  // }
+  void cekIP() async {
+    String Textt = 'Ip';
+
+    final ipv4 = await Ipify.ipv4;
+    print(ipv4);
+    Textt = ipv4.toString();
+    setState(() {});
+  }
 
 //untuk cek token valid/nggak
   void checkTokenLogin() async {
@@ -68,6 +78,14 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  void refreshPage() {
+    Future.delayed(const Duration(seconds: 1));
+    setState(() {
+      // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+      refresh.refreshCompleted();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // final bool isKeyboardVisible =
@@ -77,45 +95,52 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Styles.bgColor,
-      body: Column(
-        children: [
-          //bg Putih
-          Container(
-            alignment: Alignment.topCenter,
-            padding: const EdgeInsets.all(10),
-            margin: EdgeInsets.fromLTRB(30, screenHeight / 5, 30, 0),
-            decoration: BoxDecoration(
-              color: Styles.whiteColor,
-              borderRadius: const BorderRadius.all(
-                Radius.circular(20),
+      body: SmartRefresher(
+        controller: refresh,
+        onRefresh: refreshPage,
+        header: WaterDropHeader(
+          waterDropColor: Styles.lightOrangeColor,
+          completeDuration: const Duration(microseconds: 200),
+        ),
+        child: Column(
+          children: [
+            Container(
+              alignment: Alignment.bottomCenter,
+              // padding: const EdgeInsets.all(10),
+              margin: EdgeInsets.fromLTRB(30, screenHeight / 5, 30, 0),
+
+              decoration: BoxDecoration(
+                color: Styles.whiteColor,
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(20),
+                ),
               ),
-            ),
-            //isi di dalam bg Putih
-            child: Container(
-              child: Column(
-                children: [
-                  SizedBox(
-                    child: Column(
-                      children: [
-                        //bg gambar siHadir
-                        Image(
-                          image: AssetsLocation.imageLocation('login2'),
-                          height: screenHeight / 6.5,
-                        ),
-                        const Gap(10),
-                        //TANGGAL REALTIME
-                        _showDate(),
-                        //JAM REALTIME
-                        _showTime(),
-                      ],
+
+              //isi di dalam bg Putih
+              child: Container(
+                padding: EdgeInsets.only(top: 5, left: 5, right: 5),
+                child: Column(
+                  // crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    //bg gambar siHadir
+
+                    Image(
+                      image: AssetsLocation.imageLocation('login2'),
+                      height: screenHeight / 6.5,
                     ),
-                  ),
-                  _formLogin(context),
-                ],
+                    const Gap(10),
+                    //TANGGAL REALTIME
+                    _showDate(),
+                    //JAM REALTIME
+                    _showTime(),
+                    _formLogin(context),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -128,8 +153,8 @@ class _LoginPageState extends State<LoginPage> {
         color: Styles.textBlack,
       ),
       secondDigitTextStyle: TextStyle(
-        fontFamily: "Montserrat-Bold",
-        fontSize: screenWidth / 35,
+        fontFamily: "Montserrat-Medium",
+        fontSize: screenWidth / 30,
         color: Styles.textBlack,
       ),
       colon: Text(
@@ -149,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
         text: DateFormat("EEEE, d MMMM yyyy ", "id").format(DateTime.now()),
         style: TextStyle(
           color: Styles.textBlack,
-          fontFamily: "Montserrat-Regular",
+          fontFamily: "Montserrat-Medium",
           fontSize: screenWidth / 30,
         ),
       ),
@@ -183,13 +208,13 @@ class _LoginPageState extends State<LoginPage> {
               });
 
               if (response.status == 200) {
+                Future.delayed(Duration(seconds: 1));
                 //berhasil  simpan token login berhasil
                 if (context.mounted) {
                   Fluttertoast.showToast(
                       msg: response.message,
                       toastLength: Toast.LENGTH_SHORT,
                       gravity: ToastGravity.CENTER,
-                      timeInSecForIosWeb: 1,
                       backgroundColor: Styles.greenColor,
                       textColor: Colors.white,
                       fontSize: 16.0);
@@ -199,6 +224,8 @@ class _LoginPageState extends State<LoginPage> {
                 }
               } else {
                 if (context.mounted) {
+                  Future.delayed(Duration(seconds: 1));
+
                   //gagal login
                   Fluttertoast.showToast(
                       msg: response.message,
@@ -256,7 +283,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Text(
         title,
         style: TextStyle(
-          fontSize: screenWidth / 22,
+          fontSize: screenWidth / 20,
           fontFamily: "MomcakePro",
           color: Styles.darkBlueColor,
         ),

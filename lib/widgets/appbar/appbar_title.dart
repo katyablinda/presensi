@@ -85,8 +85,6 @@ class _AppBarTitleState extends State<AppBarTitle> {
                       radius: 30,
                       backgroundImage:
                           foto.isNotEmpty ? NetworkImage(foto) : null,
-                      //    backgroundImage:
-                      // NetworkImage(foto) ,
                     )
                   ],
                 ),
@@ -97,7 +95,7 @@ class _AppBarTitleState extends State<AppBarTitle> {
           TitleHeader(
             employeeName: nama,
             jobTitle: "$jabatan\n$divisi",
-            absenceStatus: "Ambil presensi Anda hari ini !",
+            // absenceStatus: "Ambil presensi Anda hari ini !",
           ),
         ],
       ),

@@ -12,19 +12,14 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   cupertino_icons: ^1.0.2
   gap: ^2.0.1
   flutter_keyboard_visibility: ^5.4.0
   intl: ^0.18.0
   responsive_framework: ^0.2.0
   rounded_background_text: ^0.3.0
-  # slide_to_act: ^2.0.1
-  app_popup_menu: ^1.0.0
-  # http: ^0.12.1
   http: ^0.13.5
-
-
+  dart_ipify: ^1.1.1
   shared_preferences: ^2.0.18
   fluttertoast: ^8.2.1
   flutter_awesome_alert_box: ^2.1.1
@@ -34,6 +29,9 @@ dependencies:
   liquid_pull_to_refresh: ^3.0.1
   provider: ^6.0.5
   slide_action: ^0.0.2
+  # get_ip: ^0.4.0
+  # wifi: ^0.1.5
+  network_info_plus: ^3.0.4
 
 dev_dependencies:
   flutter_test:

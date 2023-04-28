@@ -26,8 +26,6 @@ class dataPresensi {
         "waktuPulang": waktuPulang,
         "Ket": ket,
         "Tanggal": "${tanggal}",
-
-        // "Tanggal": tanggal,
         "Status": status,
       };
 }

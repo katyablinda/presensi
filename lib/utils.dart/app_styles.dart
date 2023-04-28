@@ -18,11 +18,11 @@ class Styles {
   static TextTheme textTheme = TextTheme(
     //Nama Employee
     headlineMedium: TextStyle(
-      fontFamily: "Montserrat-Bold",
+      fontFamily: "Montserrat-Medium",
       height: 1.5,
       // fontWeight: FontWeight.w500,
       textBaseline: TextBaseline.alphabetic,
-      letterSpacing: 1.5,
+      letterSpacing: 1,
       fontSize: 20,
       color: Colors.transparent,
       shadows: [

@@ -37,7 +37,6 @@ class CheckToken {
     final body = result.body;
 
     final json = jsonEncode(body);
-    print(json);
 
     return json;
   }
