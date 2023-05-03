@@ -202,7 +202,7 @@ class _SliderPresensiState extends State<SliderPresensi> {
                             },
                             thumbBuilder: (context, state) {
                               return AnimatedContainer(
-                                duration: const Duration(milliseconds: 400),
+                                duration: const Duration(milliseconds: 500),
                                 margin: const EdgeInsets.all(5),
                                 decoration: BoxDecoration(
                                   color: state.isPerformingAction
@@ -221,7 +221,7 @@ class _SliderPresensiState extends State<SliderPresensi> {
                               );
                             },
                             action: () async {
-                              Future.delayed(const Duration(seconds: 1));
+                              await Future.delayed(const Duration(seconds: 1));
 
                               await _simpanPresensi
                                   .simpanPresensi(formattedDate)
@@ -230,7 +230,7 @@ class _SliderPresensiState extends State<SliderPresensi> {
                                   loadDataPresensi();
 
                                   Future.delayed(
-                                      const Duration(milliseconds: 600));
+                                      const Duration(milliseconds: 800));
                                   Fluttertoast.showToast(
                                       msg: "Presensi Berhasil",
                                       toastLength: Toast.LENGTH_SHORT,

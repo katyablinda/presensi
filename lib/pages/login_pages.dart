@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:dart_ipify/dart_ipify.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 // import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -10,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sihadir_app/pages/main_page.dart';
 import '../model/my_response.dart';
 import '../module/login/login_controller.dart';
 import '../utils.dart/app_styles.dart';
@@ -18,7 +20,7 @@ import 'package:slide_digital_clock/slide_digital_clock.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
-  static const nameRoute = '/';
+  // static const nameRoute = '/';
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -73,7 +75,13 @@ class _LoginPageState extends State<LoginPage> {
 
     if (respons.statusCode == 200) {
       if (context.mounted) {
-        Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
+        // Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const MainPage(),
+          ),
+        );
       }
     }
   }
@@ -88,8 +96,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final bool isKeyboardVisible =
-    //     KeyboardVisibilityProvider.isKeyboardVisible(context);
+    final bool isKeyboardVisible =
+        KeyboardVisibilityProvider.isKeyboardVisible(context);
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -108,7 +116,12 @@ class _LoginPageState extends State<LoginPage> {
               alignment: Alignment.bottomCenter,
               // padding: const EdgeInsets.all(10),
               margin: EdgeInsets.fromLTRB(30, screenHeight / 5, 30, 0),
-
+              padding: EdgeInsets.only(
+                top: 15,
+                left: 10,
+                right: 10,
+                bottom: 5,
+              ),
               decoration: BoxDecoration(
                 color: Styles.whiteColor,
                 borderRadius: const BorderRadius.all(
@@ -117,26 +130,31 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               //isi di dalam bg Putih
-              child: Container(
-                padding: EdgeInsets.only(top: 5, left: 5, right: 5),
-                child: Column(
-                  // crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    //bg gambar siHadir
+              child: Column(
+                children: [
+                  isKeyboardVisible
+                      ? SizedBox(height: screenHeight / 200)
+                      : SizedBox(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              //bg gambar siHadir
 
-                    Image(
-                      image: AssetsLocation.imageLocation('login2'),
-                      height: screenHeight / 6.5,
-                    ),
-                    const Gap(10),
-                    //TANGGAL REALTIME
-                    _showDate(),
-                    //JAM REALTIME
-                    _showTime(),
-                    _formLogin(context),
-                  ],
-                ),
+                              Image(
+                                image: AssetsLocation.imageLocation('login2'),
+                                height: screenHeight / 6.5,
+                              ),
+                              const Gap(10),
+                              //TANGGAL REALTIME
+                              _showDate(),
+                              //JAM REALTIME
+                              _showTime(),
+                            ],
+                          ),
+                        ),
+                  _formLogin(context),
+                ],
               ),
             ),
           ],
@@ -219,8 +237,14 @@ class _LoginPageState extends State<LoginPage> {
                       textColor: Colors.white,
                       fontSize: 16.0);
 
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/main', (route) => false);
+                  // Navigator.pushNamedAndRemoveUntil(
+                  //     context, '/main', (route) => false);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MainPage(),
+                    ),
+                  );
                 }
               } else {
                 if (context.mounted) {
@@ -283,7 +307,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Text(
         title,
         style: TextStyle(
-          fontSize: screenWidth / 20,
+          fontSize: screenWidth / 18,
           fontFamily: "MomcakePro",
           color: Styles.darkBlueColor,
         ),
